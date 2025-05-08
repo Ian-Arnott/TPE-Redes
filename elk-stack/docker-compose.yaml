@@ -1,0 +1,52 @@
+
+services:
+  opensearch:
+    image: opensearchproject/opensearch:2.14.0
+    container_name: opensearch
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "OPENSEARCH_INITIAL_ADMIN_PASSWORD=YourStrongSuperPassword123!"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - elk-net
+
+  dashboards:
+    image: opensearchproject/opensearch-dashboards:2.14.0
+    container_name: opensearch-dashboards
+    environment:
+      OPENSEARCH_HOSTS: '["https://opensearch:9200"]'
+    ports:
+      - 5601:5601
+    expose:
+      - "5601"
+    networks:
+      - elk-net
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.13.0
+    container_name: logstash
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+    depends_on:
+      - opensearch
+    ports:
+      - "5044:5044"
+      - "9600:9600"
+    networks:
+      - elk-net
+
+volumes:
+  opensearch-data:
+
+networks:
+  elk-net:
+    driver: bridge
