@@ -1,0 +1,10 @@
+{"op":"set","id":1}
+{"k":"filebeat::logs::native::31642910-16777230","v":{"id":"native::31642910-16777230","prev_id":"","source":"/var/log/system.log","type":"log","offset":0,"timestamp":[280702671708376,1747339753],"ttl":-1,"FileStateOS":{"inode":31642910,"device":16777230},"identifier_name":"native"}}
+{"op":"set","id":2}
+{"k":"filebeat::logs::native::31642910-16777230","v":{"offset":0,"timestamp":[280702671708376,1747339753],"ttl":-1,"type":"log","prev_id":"","source":"/var/log/system.log","FileStateOS":{"inode":31642910,"device":16777230},"identifier_name":"native","id":"native::31642910-16777230"}}
+{"op":"set","id":3}
+{"k":"filebeat::logs::native::26355-16777230","v":{"FileStateOS":{"inode":26355,"device":16777230},"offset":0,"ttl":-1,"type":"log","timestamp":[280702672998376,1747339753],"identifier_name":"native","id":"native::26355-16777230","prev_id":"","source":"/var/log/install.log"}}
+{"op":"set","id":4}
+{"k":"filebeat::logs::native::31642910-16777230","v":{"type":"log","identifier_name":"native","timestamp":[280702671708376,1747339753],"ttl":-1,"FileStateOS":{"inode":31642910,"device":16777230},"id":"native::31642910-16777230","prev_id":"","source":"/var/log/system.log","offset":0}}
+{"op":"set","id":5}
+{"k":"filebeat::logs::native::26355-16777230","v":{"timestamp":[280702672998376,1747339753],"source":"/var/log/install.log","offset":0,"ttl":-1,"type":"log","FileStateOS":{"inode":26355,"device":16777230},"identifier_name":"native","id":"native::26355-16777230","prev_id":""}}
