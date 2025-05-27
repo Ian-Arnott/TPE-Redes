@@ -9,14 +9,29 @@ services:
       - bootstrap.memory_lock=true
       - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
       - "OPENSEARCH_INITIAL_ADMIN_PASSWORD=YourStrongSuperPassword123!"
-      # - "DISABLE_INSTALL_DEMO_CONFIG=true" # Prevents execution of bundled demo script which installs demo certificates and security configurations to OpenSearch
-      # - "DISABLE_SECURITY_PLUGIN=true" # Disables Security plugin
+      # SSL Configuration
+      - "plugins.security.ssl.transport.pemcert_filepath=certs/opensearch.pem"
+      - "plugins.security.ssl.transport.pemkey_filepath=certs/opensearch-key.pem"
+      - "plugins.security.ssl.transport.pemtrustedcas_filepath=certs/ca.pem"
+      - "plugins.security.ssl.transport.enforce_hostname_verification=false"
+      - "plugins.security.ssl.http.enabled=true"
+      - "plugins.security.ssl.http.pemcert_filepath=certs/opensearch.pem"
+      - "plugins.security.ssl.http.pemkey_filepath=certs/opensearch-key.pem"
+      - "plugins.security.ssl.http.pemtrustedcas_filepath=certs/ca.pem"
+      - "plugins.security.allow_default_init_securityindex=true"
+      - "plugins.security.authcz.admin_dn=CN=admin,OU=IT,O=MyOrg,L=San Francisco,ST=CA,C=US"
+      - "plugins.security.nodes_dn=CN=opensearch,OU=IT,O=MyOrg,L=San Francisco,ST=CA,C=US"
+      - "plugins.security.audit.type=internal_opensearch"
+      - "plugins.security.enable_snapshot_restore_privilege=true"
+      - "plugins.security.check_snapshot_restore_write_privileges=true"
+      - "plugins.security.restapi.roles_enabled=[\"all_access\", \"security_rest_api_access\"]"
     ulimits:
       memlock:
         soft: -1
         hard: -1
     volumes:
       - opensearch-data:/usr/share/opensearch/data
+      - ../certs:/usr/share/opensearch/config/certs:ro
     ports:
       - 9200:9200
     networks:
@@ -26,10 +41,20 @@ services:
     image: opensearchproject/opensearch-dashboards:3.0.0
     container_name: opensearch-dashboards
     environment:
-      - 'OPENSEARCH_HOSTS=["https://opensearch:9200"]' #https without the disabled security plugin
-      # - "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true" # disables security dashboards plugin in OpenSearch Dashboards   
+      - 'OPENSEARCH_HOSTS=["https://opensearch:9200"]'
+      - "OPENSEARCH_USERNAME=admin"
+      - "OPENSEARCH_PASSWORD=YourStrongSuperPassword123!"
+      - "OPENSEARCH_SSL_VERIFICATIONMODE=none"
+      # Dashboard SSL (optional - uncomment if you want HTTPS for dashboards)
+      # - "SERVER_SSL_ENABLED=true"
+      # - "SERVER_SSL_CERTIFICATE=/usr/share/opensearch-dashboards/config/certs/opensearch.pem"
+      # - "SERVER_SSL_KEY=/usr/share/opensearch-dashboards/config/certs/opensearch-key.pem"
+    volumes:
+      - ../certs:/usr/share/opensearch-dashboards/config/certs:ro
     ports:
       - 5601:5601
+    depends_on:
+      - opensearch
     networks:
       - elk-net
 
@@ -38,6 +63,7 @@ services:
     container_name: logstash
     volumes:
       - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - ../certs:/usr/share/logstash/config/certs:ro
     depends_on:
       - opensearch
     ports:
