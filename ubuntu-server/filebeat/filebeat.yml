@@ -1,0 +1,10 @@
+filebeat.inputs:
+  - type: filestream
+    enabled: true
+    paths:
+      - /var/log/system.log
+      - /var/log/install.log
+      - /var/log/apache2/*.log
+
+output.logstash:
+  hosts: ["logstash:5044"]

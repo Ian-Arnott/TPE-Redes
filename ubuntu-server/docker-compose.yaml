@@ -1,0 +1,53 @@
+
+services:
+  apache:
+    image: php:8.2-apache
+    container_name: apache-server
+    volumes:
+      - ./www:/var/www/html
+      - apache-logs:/var/log/apache2
+    ports:
+      - "8080:80"
+    networks:
+      - external-net
+      - elk-stack_elk-net
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:latest
+    container_name: mysql-server
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: server_db
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - external-net
+
+  filebeat:
+    container_name: filebeat-agent
+    image: elastic/filebeat:9.0.1
+    user: root
+    volumes:
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - apache-logs:/var/log/apache2:ro
+    networks:
+      - elk-stack_elk-net
+      - external-net
+    depends_on:
+      - apache
+
+volumes:
+  mysql-data:
+  apache-logs:
+
+networks:
+  external-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16
+  elk-stack_elk-net:
+    external: true  # assumes ELK stack created this
