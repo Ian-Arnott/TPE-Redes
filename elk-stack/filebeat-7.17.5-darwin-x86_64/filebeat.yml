@@ -4,6 +4,8 @@ filebeat.inputs:
     paths:
       - /var/log/system.log
       - /var/log/install.log
+      - ../logs/apache.log
+      - ../logs/postgres.log
 
 output.logstash:
   hosts: ["localhost:5044"]
