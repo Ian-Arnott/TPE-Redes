@@ -21,8 +21,8 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
     volumes:
-      - ./postgres-data:/var/lib/postgresql/data
-      - ./postgres-logs:/var/log/postgresql
+      # - ../postgres-data:/var/lib/postgresql/data
+      - postgresql-logs:/var/log/postgresql
     ports:
       - "5432:5432"
     command: ["postgres", "-c", "config_file=/var/lib/postgresql/data/postgresql.conf"]
@@ -34,7 +34,7 @@ services:
     volumes:
       - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
       - apache-logs:/var/log/apache2:ro
-      - ../postgres-logs:/var/log/postgresql
+      - postgresql-logs:/var/log/postgresql:ro
     networks:
       - elk-stack_elk-net
       - external-net
@@ -42,7 +42,7 @@ services:
       - apache
 
 volumes:
-  postgresql-data:
+  postgresql-logs:
   apache-logs:
 
 networks:

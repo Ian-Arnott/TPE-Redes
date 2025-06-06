@@ -1,1 +1,3 @@
 certs/*
+ubuntu-server/postgres-data/*
+elk-stack/logs/*
