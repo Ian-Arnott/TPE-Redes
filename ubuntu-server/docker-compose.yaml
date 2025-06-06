@@ -20,12 +20,14 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
+      POSTGRES_DB: postgres
     volumes:
-      # - ../postgres-data:/var/lib/postgresql/data
-      - postgresql-logs:/var/log/postgresql
+      - postgres-data:/var/lib/postgresql/data
+      - postgres-logs:/var/log/postgresql
+      - ./postgres/postgresql.conf:/etc/postgresql/custom-postgresql.conf
     ports:
       - "5432:5432"
-    command: ["postgres", "-c", "config_file=/var/lib/postgresql/data/postgresql.conf"]
+    command: ["postgres", "-c", "config_file=/etc/postgresql/custom-postgresql.conf"]
 
   filebeat:
     container_name: filebeat-agent
@@ -34,7 +36,7 @@ services:
     volumes:
       - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
       - apache-logs:/var/log/apache2:ro
-      - postgresql-logs:/var/log/postgresql:ro
+      - postgres-logs:/var/log/postgresql:ro
     networks:
       - elk-stack_elk-net
       - external-net
@@ -42,7 +44,8 @@ services:
       - apache
 
 volumes:
-  postgresql-logs:
+  postgres-logs:
+  postgres-data:
   apache-logs:
 
 networks:
