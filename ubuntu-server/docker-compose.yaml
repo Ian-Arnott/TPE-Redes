@@ -12,19 +12,20 @@ services:
       - external-net
       - elk-stack_elk-net
     depends_on:
-      - mysql
-
-  mysql:
-    image: mysql:latest
-    container_name: mysql-server
-    restart: always
+      - postgres
+  
+  postgres:
+    image: postgres:15
+    container_name: postgres
     environment:
-      MYSQL_ROOT_PASSWORD: rootpass
-      MYSQL_DATABASE: server_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
     volumes:
-      - mysql-data:/var/lib/mysql
-    networks:
-      - external-net
+      - ./postgres-data:/var/lib/postgresql/data
+      - ./postgres-logs:/var/log/postgresql
+    ports:
+      - "5432:5432"
+    command: ["postgres", "-c", "config_file=/var/lib/postgresql/data/postgresql.conf"]
 
   filebeat:
     container_name: filebeat-agent
@@ -33,6 +34,7 @@ services:
     volumes:
       - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
       - apache-logs:/var/log/apache2:ro
+      - ../postgres-logs:/var/log/postgresql
     networks:
       - elk-stack_elk-net
       - external-net
@@ -40,14 +42,11 @@ services:
       - apache
 
 volumes:
-  mysql-data:
+  postgresql-data:
   apache-logs:
 
 networks:
   external-net:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.19.0.0/16
   elk-stack_elk-net:
     external: true  # assumes ELK stack created this

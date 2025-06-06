@@ -4,7 +4,11 @@ filebeat.inputs:
     paths:
       - /var/log/apache2/access.log
       - /var/log/apache2/error.log
+      - /var/log/postgresql/postgresql.log
 
+    multiline.pattern: '^\d{4}-\d{2}-\d{2}' # si hay logs multilínea
+    multiline.negate: true
+    multiline.match: after
 output.logstash:
   hosts: ["logstash:5044"]
 
