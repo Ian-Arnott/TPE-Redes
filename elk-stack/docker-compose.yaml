@@ -44,11 +44,11 @@ services:
       - 'OPENSEARCH_HOSTS=["https://opensearch:9200"]'
       - "OPENSEARCH_USERNAME=admin"
       - "OPENSEARCH_PASSWORD=YourStrongSuperPassword123!"
-      # - "OPENSEARCH_SSL_VERIFICATIONMODE=none"
+      - "OPENSEARCH_SSL_VERIFICATIONMODE=none"
       # Dashboard SSL (optional - uncomment if you want HTTPS for dashboards)
-      - "SERVER_SSL_ENABLED=true"
-      - "SERVER_SSL_CERTIFICATE=/usr/share/opensearch-dashboards/config/certs/opensearch.pem"
-      - "SERVER_SSL_KEY=/usr/share/opensearch-dashboards/config/certs/opensearch-key.pem"
+      # - "SERVER_SSL_ENABLED=true"
+      # - "SERVER_SSL_CERTIFICATE=/usr/share/opensearch-dashboards/config/certs/opensearch.pem"
+      # - "SERVER_SSL_KEY=/usr/share/opensearch-dashboards/config/certs/opensearch-key.pem"
     volumes:
       - ../certs:/usr/share/opensearch-dashboards/config/certs:ro
     ports:
@@ -68,6 +68,7 @@ services:
       - opensearch
     ports:
       - 5044:5044
+      - 5000:5000
       - 9600:9600
     networks:
       - elk-net

@@ -9,6 +9,13 @@ filebeat.inputs:
     multiline.pattern: '^\d{4}-\d{2}-\d{2}' # si hay logs multilínea
     multiline.negate: true
     multiline.match: after
+
+  - type: syslog
+    protocol.udp:
+      host: "0.0.0.0:514"
+    format: auto
+    tags: ["syslog"]
+
 output.logstash:
   hosts: ["logstash:5044"]
 

@@ -1,5 +1,18 @@
 
 services:
+
+  syslog-ubuntu:
+    image: ubuntu:22.04
+    container_name: syslog-ubuntu
+    command: >
+      sh -c "apt update && apt install -y rsyslog &&
+             echo '*.* @filebeat-agent:514' >> /etc/rsyslog.conf &&
+             rsyslogd -n"
+    networks:
+      - elk-stack_elk-net
+    depends_on:
+      - filebeat
+
   apache:
     image: php:8.2-apache
     container_name: apache-server
