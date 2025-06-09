@@ -3,13 +3,27 @@ services:
   syslog-ubuntu:
     image: ubuntu:22.04
     container_name: syslog-ubuntu
+    privileged: true  # Add this for UFW
     volumes:
       - syslog-etc:/etc
     command: >
-      sh -c "apt update && apt install -y rsyslog &&
-             echo '*.* @filebeat-agent:514' >> /etc/rsyslog.conf &&
-             echo '#module(load=\"imklog\")' > /etc/rsyslog.d/00-disable-imklog.conf &&
-             rsyslogd -n"
+      bash -c "
+        apt update &&
+        DEBIAN_FRONTEND=noninteractive apt install -y rsyslog ufw netcat-traditional libterm-readline-perl-perl &&
+        echo '*.* @filebeat-agent:514' >> /etc/rsyslog.conf &&
+        echo '#module(load=\"imklog\")' > /etc/rsyslog.d/00-disable-imklog.conf &&
+        ufw --force enable &&
+        ufw logging on &&
+        ufw default deny incoming &&
+        ufw default allow outgoing &&
+        rsyslogd &
+
+        # Background UFW block events
+        (while true; do
+          timeout 1 nc -z \$(shuf -i 1-255 -n 1).\$(shuf -i 1-255 -n 1).\$(shuf -i 1-255 -n 1).\$(shuf -i 1-255 -n 1) \$(shuf -i 1-65535 -n 1) 2>/dev/null || true
+          sleep \$(shuf -i 3-15 -n 1)
+        done)
+      "
     networks:
       - elk-stack_elk-net
     depends_on:
