@@ -68,7 +68,7 @@ services:
       - opensearch
     ports:
       - 5044:5044
-      - 5000:5000
+      - 6000:6000
       - 9600:9600
     networks:
       - elk-net
