@@ -19,7 +19,7 @@ services:
     container_name: apache-server
     volumes:
       - ./www:/var/www/html
-      - apache-logs:/var/log/apache2
+      - ./apache-logs:/var/log/apache2
     ports:
       - "8080:80"
     networks:
@@ -49,7 +49,7 @@ services:
     user: root
     volumes:
       - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
-      - apache-logs:/var/log/apache2:ro
+      - ./apache-logs:/var/log/apache2:ro
       - postgres-logs:/var/log/postgresql:ro
     networks:
       - elk-stack_elk-net
@@ -60,7 +60,6 @@ services:
 volumes:
   postgres-logs:
   postgres-data:
-  apache-logs:
 
 networks:
   external-net:

@@ -1,3 +1,4 @@
+###################### Filebeat Inputs ######################
 filebeat.inputs:
   - type: filestream
     enabled: true
@@ -5,8 +6,7 @@ filebeat.inputs:
       - /var/log/apache2/access.log
       - /var/log/apache2/error.log
       - /var/log/postgresql/postgresql.log
-
-    multiline.pattern: '^\d{4}-\d{2}-\d{2}' # si hay logs multilínea
+    multiline.pattern: '^\d{4}-\d{2}-\d{2}'
     multiline.negate: true
     multiline.match: after
 
@@ -16,7 +16,9 @@ filebeat.inputs:
     format: auto
     tags: ["syslog"]
 
+###################### Output ######################
 output.logstash:
   hosts: ["logstash:5044"]
 
+###################### Logging ######################
 logging.level: info
