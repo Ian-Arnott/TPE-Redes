@@ -1,0 +1,14 @@
+######################### Auditbeat Modules #########################
+auditbeat.modules:
+  - module: file_integrity
+    paths:
+      - /hostfs/etc/passwd
+    scan_at_start: true
+    recursive: false
+
+######################### Auditbeat Output #########################
+output.logstash:
+  hosts: ["logstash:5044"]
+
+######################### Logging #########################
+logging.level: info

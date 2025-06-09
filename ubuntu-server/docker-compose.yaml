@@ -1,9 +1,10 @@
 
 services:
-
   syslog-ubuntu:
     image: ubuntu:22.04
     container_name: syslog-ubuntu
+    volumes:
+      - syslog-etc:/etc
     command: >
       sh -c "apt update && apt install -y rsyslog &&
              echo '*.* @filebeat-agent:514' >> /etc/rsyslog.conf &&
@@ -57,9 +58,25 @@ services:
     depends_on:
       - apache
 
+  auditbeat:
+    image: docker.elastic.co/beats/auditbeat:8.9.0
+    container_name: auditbeat
+    user: root
+    cap_add: ["AUDIT_CONTROL","AUDIT_READ"]
+    volumes:
+      - ./auditbeat/auditbeat.yml:/usr/share/auditbeat/auditbeat.yml:ro
+      - syslog-etc:/hostfs/etc:ro
+      - ../certs/ca.pem:/usr/share/auditbeat/certs/ca.pem:ro
+    networks:
+      - elk-stack_elk-net
+      - external-net
+    depends_on:
+      - syslog-ubuntu
+
 volumes:
   postgres-logs:
   postgres-data:
+  syslog-etc:
 
 networks:
   external-net:
