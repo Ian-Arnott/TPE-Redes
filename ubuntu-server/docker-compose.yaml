@@ -54,6 +54,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
       - postgres-logs:/var/log/postgresql
       - ./postgres/postgresql.conf:/etc/postgresql/custom-postgresql.conf
+      - ./postgres:/scripts
     ports:
       - "5432:5432"
     command: ["postgres", "-c", "config_file=/etc/postgresql/custom-postgresql.conf"]

@@ -1,13 +1,8 @@
 <?php
 // Simple PHP app to generate logs for ELK testing
 
-// Database connection
-$host = 'mysql-server';
-$dbname = 'server_db';
-$username = 'root';
-$password = 'rootpass';
-
 session_start();
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -25,8 +20,9 @@ session_start();
     <h2>Generate Test Logs</h2>
     <form method="POST">
         <button name="action" value="normal">Normal Request</button>
-        <button name="action" value="error">Trigger Error</button>
-        <button name="action" value="database">Test Database</button>
+        <button name="action" value="error">Trigger PHP Error (500)</button>
+        <button name="action" value="http500">Return HTTP 500</button>
+        <button name="action" value="http503">Return HTTP 503</button>
         <button name="action" value="bulk">Generate Bulk Logs</button>
     </form>
 
@@ -38,29 +34,31 @@ session_start();
             case 'normal':
                 echo "<div class='result'>✅ Normal request processed - Check access logs!</div>";
                 break;
-                
+
             case 'error':
-                // This will generate a PHP error in the error log
-                trigger_error("Test error generated for ELK logging", E_USER_ERROR);
-                break;
-                
-            case 'database':
-                try {
-                    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-                    $stmt = $pdo->query("SELECT NOW() as time");
-                    $result = $stmt->fetch();
-                    echo "<div class='result'>✅ Database connected! Time: " . $result['time'] . "</div>";
-                } catch(PDOException $e) {
-                    echo "<div class='result'>❌ Database error: " . $e->getMessage() . "</div>";
-                }
-                break;
-                
+                http_response_code(500);
+                error_log("🚨 Triggered PHP Error 500 for ELK testing");
+                trigger_error("Manual PHP ERROR triggered", E_USER_ERROR);
+                echo "<div class='result'>❌ Error 500 simulated</div>";
+                exit;
+
+            case 'http500':
+                http_response_code(500);
+                error_log("🚨 Returned HTTP 500 response for ELK test");
+                echo "<div class='result'>❌ Forced HTTP 500 error</div>";
+                exit;
+
+            case 'http503':
+                http_response_code(503);
+                error_log("🚨 Returned HTTP 503 response for ELK test");
+                echo "<div class='result'>❌ Forced HTTP 503 error</div>";
+                exit;
+
             case 'bulk':
-                // Generate multiple requests
                 for($i = 1; $i <= 10; $i++) {
-                    error_log("Bulk test log entry #$i - User activity simulation");
+                    error_log("📄 Bulk log entry #$i - User simulation");
                 }
-                echo "<div class='result'>✅ Generated 10 log entries!</div>";
+                echo "<div class='result'>✅ Generated 10 bulk log entries</div>";
                 break;
         }
     }
