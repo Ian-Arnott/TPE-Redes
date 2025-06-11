@@ -6,8 +6,9 @@ services:
     volumes:
       - syslog-etc:/etc
     command: >
-      sh -c "apt update && apt install -y rsyslog &&
-      echo '. @filebeat-agent:514' >> /etc/rsyslog.conf &&
+      sh -c "apt update &&
+      DEBIAN_FRONTEND=noninteractive apt install -y rsyslog --option=Dpkg::Options::='--force-confold' &&
+      echo '*.* @filebeat-agent:514' >> /etc/rsyslog.conf &&
       echo '#module(load=\"imklog\")' > /etc/rsyslog.d/00-disable-imklog.conf &&
       rsyslogd -n"
     networks:
