@@ -22,6 +22,7 @@ services:
     volumes:
       - ./www:/var/www/html
       - ./apache-logs:/var/log/apache2
+      - ./apache-scripts:/scripts
     ports:
       - "8080:80"
     networks:

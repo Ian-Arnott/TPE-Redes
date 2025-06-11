@@ -44,17 +44,21 @@ services:
       - 'OPENSEARCH_HOSTS=["https://opensearch:9200"]'
       - "OPENSEARCH_USERNAME=admin"
       - "OPENSEARCH_PASSWORD=YourStrongSuperPassword123!"
-      - "OPENSEARCH_SSL_VERIFICATIONMODE=none"
-      # Dashboard SSL (optional - uncomment if you want HTTPS for dashboards)
-      # - "SERVER_SSL_ENABLED=true"
-      # - "SERVER_SSL_CERTIFICATE=/usr/share/opensearch-dashboards/config/certs/opensearch.pem"
-      # - "SERVER_SSL_KEY=/usr/share/opensearch-dashboards/config/certs/opensearch-key.pem"
+      - "OPENSEARCH_DASHBOARDS_SMTP_ENABLED=true"
+      - "OPENSEARCH_DASHBOARDS_SMTP_HOST=smtp-relay"
+      - "OPENSEARCH_DASHBOARDS_SMTP_PORT=25"
+      - "OPENSEARCH_DASHBOARDS_SMTP_SECURE=false"
+      - "OPENSEARCH_DASHBOARDS_SMTP_FROM=<INSERT MAIL>"
+      - "SERVER_SSL_ENABLED=true"
+      - "SERVER_SSL_CERTIFICATE=/usr/share/opensearch-dashboards/config/certs/opensearch.pem"
+      - "SERVER_SSL_KEY=/usr/share/opensearch-dashboards/config/certs/opensearch-key.pem"
     volumes:
       - ../certs:/usr/share/opensearch-dashboards/config/certs:ro
     ports:
       - 5601:5601
     depends_on:
       - opensearch
+      - smtp-relay
     networks:
       - elk-net
 
@@ -70,6 +74,21 @@ services:
       - 5044:5044
       - 6000:6000
       - 9600:9600
+    networks:
+      - elk-net
+
+  smtp-relay:
+    image: bytemark/smtp:latest
+    container_name: smtp-relay
+    restart: always
+    environment:
+      - RELAY_HOST=smtp.gmail.com
+      - RELAY_PORT=587
+      - RELAY_USERNAME=<INSERT YOUR EMAIL>
+      - RELAY_PASSWORD=<INSERT YOUR PASSWORD>
+      - MAILNAME=yourdomain.local
+    ports:
+      - "25:25"
     networks:
       - elk-net
 

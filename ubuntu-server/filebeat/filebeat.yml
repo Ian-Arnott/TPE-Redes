@@ -6,9 +6,25 @@ filebeat.inputs:
       - /var/log/apache2/access.log
       - /var/log/apache2/error.log
       - /var/log/postgresql/postgresql.log
+
     multiline.pattern: '^\d{4}-\d{2}-\d{2}'
     multiline.negate: true
     multiline.match: after
+    tags: ["webserver", "postgres"]
+
+  - type: filestream
+    id: apache-login-logs
+    enabled: true
+    paths:
+      - /var/log/apache2/login_events.log
+    multiline.pattern: '^\d{4}-\d{2}-\d{2}'
+    multiline.negate: true
+    multiline.match: after
+    processors:
+      - decode_json_fields:
+          fields: ["message"]
+          target: ""
+          overwrite_keys: true
     tags: ["webserver", "postgres"]
 
   - type: syslog
