@@ -52,8 +52,6 @@ services:
     volumes:
       - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
       - ./apache-logs:/var/log/apache2:ro
-      # - /var/log/ufw.log:/var/log/ufw.log:ro
-      # - /var/log/kern.log:/var/log/kern.log:ro
       - postgres-logs:/var/log/postgresql:ro
     networks:
       - elk-stack_elk-net
