@@ -64,17 +64,6 @@ session_start();
     }
     ?>
 
-    <h2>Current Info</h2>
-    <div class='result'>
-        <strong>Time:</strong> <?php echo date('Y-m-d H:i:s'); ?><br>
-        <strong>IP:</strong> <?php echo $_SERVER['REMOTE_ADDR'] ?? 'Unknown'; ?><br>
-        <strong>User Agent:</strong> <?php echo substr($_SERVER['HTTP_USER_AGENT'] ?? 'Unknown', 0, 100); ?>
-    </div>
 
-    <h2>Test Links</h2>
-    <p>Click these to generate different log entries:</p>
-    <a href="?page=about">About Page (404)</a> |
-    <a href="?search=test">Search</a> |
-    <a href="?user=<?php echo rand(1,100); ?>">User Profile</a>
 </body>
 </html>
