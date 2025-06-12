@@ -85,4 +85,4 @@ networks:
   external-net:
     driver: bridge
   elk-stack_elk-net:
-    external: true  # assumes ELK stack created this
+    external: true
