@@ -73,3 +73,24 @@ https://localhost:5601
 
 Es posible que tu navegador muestre una advertencia de certificado no válido (por ser auto-firmado). Podés continuar de todos modos.
 
+## Credenciales de acceso
+
+Por defecto, el usuario y la contraseña para acceder a OpenSearch y Dashboards son:
+
+- **Usuario:** `admin`
+- **Contraseña:** `YourStrongSuperPassword!`
+
+Se recomienda cambiar la contraseña por una propia para mayor seguridad. Podés hacerlo editando el archivo `elk-stack/docker-compose.yml`, modificando la variable correspondiente. Es una buena práctica utilizar variables de entorno para gestionar credenciales sensibles en lugar de escribirlas directamente en el archivo.
+
+Por ejemplo, podés definir en tu entorno:
+
+```bash
+export OPENSEARCH_PASSWORD=TuContraseñaSegura
+```
+
+Y luego referenciarla en el `docker-compose.yml`:
+
+```yaml
+OPENSEARCH_INITIAL_ADMIN_PASSWORD: ${OPENSEARCH_PASSWORD}
+```
+
